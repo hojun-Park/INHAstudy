@@ -127,8 +127,19 @@
         border-color: white;
         border-radius: 4px;
         box-shadow: none;
-        font-size: 10px;
+        font-size: 8px;
         font-family: 'Noto Sans KR', sans-serif;
+    }
+    .btn2-sm {
+        border-bottom-width: 0px;
+        border-right-width: 0px;
+        border-top-width: 0px;
+        border-left-width: 0px;
+        color: black;
+        float: right;
+        font-size: 16px;
+        font-family: 'Noto Sans KR', sans-serif;
+        margin-right: 7px;
     }
     form.formLogin {
         margin: 0;
@@ -141,6 +152,7 @@
         border-color: black;
     }
     .btn-outline-primary {
+        margin-right: 10px;
         border-bottom-width: 0px;
         border-right-width: 0px;
         border-top-width: 0px;
@@ -174,9 +186,9 @@
             <a href="/" class="logo">
                 <span class="title">INHA Study</span>
             </a>
-            <form class="formLogin" action="/login" method="GET">
-                <button class="btn btn-primary btn-sm">Login</button>
-            </form>
+            <span id="switchLogin">
+                <form class="formLogin" action="login.html" method="GET"> <button class="btn btn-sm">Login</button> </form>
+            </span>
         </div>
     </header>
 
@@ -194,19 +206,24 @@
                     <input name="roomTitle" type="text" class="form-control" placeholder="스터디 그룹을 검색하세요" aria-label="Text input with dropdown button" style="height: 56px;width: 480px;">
                 </form>
             </div>
+            <div>
+                <a class="btn btn-secondary btn-lg disabled" type="button" >#토익</a>
+                <a class="btn btn-secondary btn-lg disabled" type="button" >#알고리즘</a>
+                <a class="btn btn-secondary btn-lg disabled" type="button" >#GSAT</a>
+                <a class="btn btn-secondary btn-lg disabled" type="button" >#정처기</a>
+                <a class="btn btn-secondary btn-lg disabled" type="button" >#면접</a>
+            </div>
+            <div>
+                <br>
 
-            <a class="btn btn-secondary btn-lg disabled" type="button" >#토익</a>
-            <a class="btn btn-secondary btn-lg disabled" type="button" >#알고리즘</a>
-            <a class="btn btn-secondary btn-lg disabled" type="button" >#GSAT</a>
-            <a class="btn btn-secondary btn-lg disabled" type="button" >#정처기</a>
-            <a class="btn btn-secondary btn-lg disabled" type="button" >#면접</a>
+                <button class="btn btn2-sm" id="myPage" onclick="checkLoginPage()">MY PAGE</button>
 
-            <br><br>
-            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#makeRoom"
-                    data-bs-whatever="@mdo">Create Room
-            </button>
-            <br><br>
-
+                <button type="button" class="btn btn-outline-primary" id="createRoom" data-bs-toggle="modal" data-bs-target="#makeRoom"
+                        data-bs-whatever="@mdo" onclick="checkLoginCreateRoom()">Create Room
+                </button>
+                <br><br>
+                <input id="localId" type="text">
+            </div>
             <div class="modal fade" id="makeRoom" tabindex="-1" aria-labelledby="makeRoomLabel" data-bs-backdrop="static" data-bs-keyboard="false" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content createRoomModal_background">
@@ -355,7 +372,7 @@
                                 <button type="button" class="btn btn-primary" style="background-color:transparent; border-color: #fff;" data-bs-toggle="modal" data-bs-target="#studyPlan{{id}}"
                                         data-bs-whatever="@mdo">스터디계획서
                                 </button>
-                                <button type="button" class="btn btn-primary" style="background-color:transparent; border-color: #fff;">가입신청
+                                <button type="button" class="btn btn-primary" style="background-color:transparent; border-color: #fff;" onclick="checkLoginJoin()">가입신청
                                 </button>
                             </div>
 
@@ -450,6 +467,44 @@
 
 <!-- Scripts -->
 <script>
+
+    let checkLogin;
+
+    function checkLoginCreateRoom(){
+        if(checkLogin==='Y') {
+            alert("방을 생성");
+        }else if(checkLogin ==='N'){
+            alert("로그인 후 이용해주세요")
+            location.href = "/login.html"
+        }else{
+            alert("오류!");
+        }
+    }
+
+    function checkLoginPage() {
+        if (checkLogin === 'Y') {
+            location.href="/mypage"
+        }else if(checkLogin === 'N'){
+            alert("로그인 후 이용해주세요");
+            location.href = "/login.html"
+        }
+        else{
+            alert("오류!");
+        }
+    }
+
+    function checkLoginJoin(){
+        if (checkLogin === 'Y') {
+            location.href="/"
+        }else if(checkLogin === 'N'){
+            alert("로그인 후 이용해주세요");
+            location.href = "/login.html"
+        }
+        else{
+            alert("오류!");
+        }
+    }
+
     function maxPeople(el, max) {
         if (el.value > max) {
             alert("최대 인원 수는 100명입니다.");
@@ -501,6 +556,59 @@
             }
         })
     }
+
+    window.onload=function (){
+        localId();
+    }
+
+    function localId(){
+        if(localStorage.getItem('localId')){
+            document.getElementById("localId").value = localStorage.getItem('localId');
+
+            $.ajax({
+                type: 'GET',
+                url: `/api/getCheckLogin/${localStorage.getItem('localId')}`,
+                contentType: "String",
+                success: function (response){
+                    if(response === 'Y'){
+                        alert("CheckLogin 정보(Y)를 가져왔습니다.")
+                        checkLogin=response;
+                        document.getElementById("switchLogin").innerHTML =
+                                '<button class="btn btn-sm" onclick=switchCheckLogin(localStorage.getItem("localId"))>Logout</button>'
+                        return false;
+                    }
+                    else{
+                        $(`#myPage`).hide();
+                        alert("CheckLogin 정보(N)를 가져왔습니다.")
+                        checkLogin=response;
+                        document.getElementById("switchLogin").innerHTML =
+                                '<form class="formLogin" action="login.html" method="GET"> <button class="btn btn-sm">Login</button> </form>'
+                        return false;
+                    }
+                },
+                error: function (){
+                    $(`#myPage`).hide();
+                    alert("CheckLogin 정보를 가져오지 못했습니다.")
+                    checkLogin='N';
+                    return false;
+                }
+            })
+        }
+    }
+
+    function switchCheckLogin(inputId) {
+        $.ajax({
+            type: 'PUT',
+            url: `/api/switchCheckLogin/${inputId}`,
+            success: function (response){
+            }
+        })
+        localStorage.setItem("localId",null);
+        location.href = "/";
+        return false;
+    }
+
+
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="/assets/js/jquery.min.js"></script>

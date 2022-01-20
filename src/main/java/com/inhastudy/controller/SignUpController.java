@@ -52,10 +52,23 @@ public class SignUpController {
         return signupRepository.findSignUpById(inputId).getPassword();
     }
 
-    @PutMapping("/api/acceptlogin/{inputId}")
+    //주형
+    @GetMapping("/api/getCheckLogin/{inputId}")
+    public String getCheckLogin(@PathVariable String inputId){
+        return signupRepository.findSignUpById(inputId).getCheckLogin();
+    }
+
+    @PutMapping("/api/acceptlogin/{inputId}") // 로그인한 사용자 checkLogin을 Y로 변경
     public void acceptLogin(@PathVariable String inputId){
         SignUp signUp = signupRepository.findSignUpById(inputId);
         signupService.updateCheckLogin(signUp, "Y");
+    }
+
+    //주형
+    @PutMapping("/api/switchCheckLogin/{inputId}") // 로그아웃한 사용자 checkLogin을 N으로 변경
+    public void switchCheckLogin(@PathVariable String inputId){
+        SignUp signUp = signupRepository.findSignUpById(inputId);
+        signupService.updateCheckLogin(signUp, "N");
     }
 
     @GetMapping("/api/IdOverlapCheck/{inputId}")

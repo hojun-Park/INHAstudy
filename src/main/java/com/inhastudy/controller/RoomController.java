@@ -27,6 +27,7 @@ public class RoomController {
 
     @GetMapping("login")
     public String login() {
+
         return "login";
     }
 
@@ -43,6 +44,9 @@ public class RoomController {
         model.addAttribute("roomList", roomList);
         return "home";
     }
+
+
+
 
 
 }

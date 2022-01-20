@@ -113,6 +113,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <script>
+
     function acceptLogin(inputId){
         console.log("acceptLogin 함수 실행")
         $.ajax({
@@ -163,8 +164,9 @@
             success: function (response){
                 if(response === inputPassword.value){
                     alert("로그인에 성공하였습니다.")
+                    localStorage.setItem("localId", inputId.value);
                     acceptLogin(inputId.value);
-                    moveMainPage(inputId.value);
+                    moveMainPage();
                     return false;
                 }
                 else{
@@ -189,15 +191,8 @@
         return false;
     }
 
-    function moveMainPage(inputId) {
-        $.ajax({
-            type: 'GET',
-            url: `/api/deliverId/${inputId}`,
-            contentType: "String",
-            success: function (response){
+    function moveMainPage() {
 
-            }
-        })
         location.href = "/";
         return false;
     }
