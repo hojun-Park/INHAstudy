@@ -215,10 +215,11 @@
             </div>
             <div>
                 <br>
+                <form class="formLogin" action="mypage" method="GET">
+                    <button class="btn btn2-sm" id="myPage">MY PAGE</button>
+                </form>
 
-                <button class="btn btn2-sm" id="myPage" onclick="checkLoginPage()">MY PAGE</button>
-
-                <button type="button" class="btn btn-outline-primary" id="createRoom" data-bs-toggle="modal" data-bs-target="#makeRoom"
+                <button type="button" class="btn btn-outline-primary" id="createRoom" data-bs-toggle="modal"
                         data-bs-whatever="@mdo" onclick="checkLoginCreateRoom()">Create Room
                 </button>
                 <br><br>
@@ -472,7 +473,7 @@
 
     function checkLoginCreateRoom(){
         if(checkLogin==='Y') {
-            alert("방을 생성");
+            $(`#makeRoom`).modal('show');
         }else if(checkLogin ==='N'){
             alert("로그인 후 이용해주세요")
             location.href = "/login.html"
@@ -481,21 +482,9 @@
         }
     }
 
-    function checkLoginPage() {
-        if (checkLogin === 'Y') {
-            location.href="/mypage"
-        }else if(checkLogin === 'N'){
-            alert("로그인 후 이용해주세요");
-            location.href = "/login.html"
-        }
-        else{
-            alert("오류!");
-        }
-    }
-
     function checkLoginJoin(){
         if (checkLogin === 'Y') {
-            location.href="/"
+            location.href="/memo.html"
         }else if(checkLogin === 'N'){
             alert("로그인 후 이용해주세요");
             location.href = "/login.html"

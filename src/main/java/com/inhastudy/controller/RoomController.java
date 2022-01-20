@@ -31,6 +31,11 @@ public class RoomController {
         return "login";
     }
 
+    @GetMapping("mypage")
+    public String moveMyPage(){
+        return "mypage";
+    }
+
     @GetMapping("/home/{id}")
     public String showRoom(@PathVariable Long id, Model model) {
         Room room = roomRepository.findById(id).orElse(null);
